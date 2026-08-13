@@ -1039,8 +1039,9 @@ EndSection
         return True
 
     def _setup_arch_chroot(self, target: str):
-        chroot_script = f"""{target}/root/setup-dpa.sh
-#!/bin/bash
+        chroot_script = f"{target}/root/setup-dpa.sh"
+        with open(chroot_script, 'w') as f:
+            f.write("""#!/bin/bash
 # Basic system configuration
 
 # Locale
@@ -1069,11 +1070,7 @@ systemctl enable NetworkManager
 echo "root:root" | chpasswd
 
 echo "Basic configuration completed"
-"""
-
-        with open(chroot_script, 'w') as f:
-            f.write(chroot_script)
-
+    """)
         os.chmod(chroot_script, 0o755)
         subprocess.run(f'arch-chroot {target} /root/setup-dpa.sh', shell=True)
         self._print_status('ok', "Basic configuration completed")
