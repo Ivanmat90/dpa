@@ -47,28 +47,28 @@ dpa install vlc
 
 ## 🚀 Установка
 
-### Способ 1: Одна команда (быстрый)
+### Method 1: One command (fast)
 ```bash
 curl -sSL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash
 ```
 
-### Способ 2: Пошагово (рекомендуемый, стабильный)
+### Method 2: Step by step (recommended, stable)
 ```bash
-# 1. Скачиваем скрипт
+# 1. Download the script
 curl -OL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh
 
-# 2. Делаем исполняемым
+# 2. Make it executable
 chmod +x install-dpa.sh
 
-# 3. Запускаем
+# 3. Launch
 ./install-dpa.sh
 ```
 
-**Почему способ 2 лучше?**  
-- Вы не запускаете неизвестный код на лету  
-- Можно проверить скрипт перед запуском  
-- В случае ошибки видно, на каком шаге проблема  
-- Работает стабильнее в условиях нестабильного интернета
+**Why is method 2 better?**
+- You don't run unknown code on the fly
+- You can test the script before running
+- If an error occurs, you can see which step is causing the problem
+- It works more reliably in unstable internet conditions
 
 ---
 
