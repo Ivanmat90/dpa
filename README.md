@@ -188,4 +188,4 @@ MIT License — free for everyone!
 
 **Made with ❤️ for the Linux community**
 
-[![GitHub](https://img.shields.io/badge/GitHub-dpa--team/dpa-181717)](https://github.com/dpa-team/dpa)
+[![GitHub](https://img.shields.io/badge/GitHub-dpa--team/dpa-181717)](https://github.com/Ivanmat90/dpa)
