@@ -1381,7 +1381,7 @@ echo "yay installed"
 
         gaming_packages = [
             'steam', 'lutris', 'wine', 'winetricks', 'gamemode',
-            'mangohud', 'goverlay', 'vkbasalt', 'proton-ge-custom',
+            'mangohud', 'goverlay',
             'discord', 'obs-studio', 'ffmpeg'
         ]
 
