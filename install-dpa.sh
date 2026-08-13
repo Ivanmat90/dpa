@@ -1,7 +1,7 @@
 #!/bin/bash
 # install-dpa.sh - Самодостаточный инсталлятор DPA
 # Версия: 2.0.0
-# GitHub: https://github.com/Ivanmat90/dpa
+# GitHub: https://github.com/dpa-team/dpa
 
 set -e
 
@@ -119,8 +119,8 @@ print_banner() {
     echo "  ╚═════╝ ╚═╝     ╚═╝  ╚═╝"
     echo -e "${NC}"
     echo -e "${GREEN}  ${MSG_BANNER} v${DPA_VERSION}${NC}"
-    echo -e "${YELLOW}  apt | dnf | pacman${NC}"
-    echo -e "${PURPLE}  https://github.com/Ivanmat90/dpa${NC}"
+    echo -e "${YELLOW}  apt | dnf | pacman | zypper | yum${NC}"
+    echo -e "${PURPLE}  https://github.com/dpa-team/dpa${NC}"
     echo ""
 }
 
@@ -1217,12 +1217,11 @@ echo "Basic configuration completed"
         self._install_gpu_drivers(target)
 
         if env['service']:
-            service_script = f"""{target}/root/enable-service.sh
-#!/bin/bash
-systemctl enable {env['service']}
-"""
+            service_script = f"{target}/root/enable-service.sh"
             with open(service_script, 'w') as f:
-                f.write(service_script)
+                f.write(f"""#!/bin/bash
+systemctl enable {env['service']}
+""")
             os.chmod(service_script, 0o755)
             subprocess.run(f'arch-chroot {target} /root/enable-service.sh', shell=True)
             self._print_status('ok', _('arch_desktop_service', env['service']))
