@@ -1,8 +1,8 @@
 # ⚡ DPA — Dnf Pacman Apt
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/dpa-team/dpa)
+[![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/Ivanmat90/dpa)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/dpa-team/dpa/stargazers)
+[![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/Ivanmat90/dpa/stargazers)
 
 > **Universal Package Manager for Linux**  
 > One syntax for all package managers. Simplicity for everyone.
@@ -48,13 +48,13 @@ dpa install vlc
 ## 🚀 Quick Install
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/dpa-team/dpa/main/install-dpa.sh | bash
+curl -sSL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash
 ```
 
 Or with wget:
 
 ```bash
-wget -qO- https://raw.githubusercontent.com/dpa-team/dpa/main/install-dpa.sh | bash
+wget -qO- https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash
 ```
 
 ---
