@@ -45,7 +45,7 @@ dpa install vlc
 
 ---
 
-## 🚀 Установка
+## 🚀 Installing
 
 ### Method 1: One command (fast)
 ```bash
