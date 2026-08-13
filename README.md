@@ -181,7 +181,6 @@ DPA is a free and open-source project created by a 15-year-old Linux enthusiast.
 - **Star** the project on GitHub
 - **Report issues** and suggest features
 - **Contribute code** and improvements
-- **Donate** (optional) — links in the repo
 
 ---
 
