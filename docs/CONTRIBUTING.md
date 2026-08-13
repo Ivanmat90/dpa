@@ -8,8 +8,7 @@ First off, thanks for taking the time to contribute! ❤️
 
 Before creating bug reports, please check the existing issues to avoid duplicates. When you create a bug report, include as many details as possible:
 
-- **OS and version** (`neofetch` output is perfect)
-- **DPA version** (`dpa --version` or check the script header)
+- **OS and version** (`neofetch` or `fastfetch` output is perfect)
 - **Steps to reproduce** (be specific)
 - **Expected behavior** vs. **what actually happened**
 - **Screenshots or terminal logs** (if applicable)
