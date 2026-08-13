@@ -58,7 +58,3 @@ Be kind. DPA is a project made with love for the Linux community. Let's keep it 
 Feel free to ask in the issues or discussions. We're all learning here.
 
 **Thank you for contributing!** 🚀
-
-```
-
-Теперь у проекта есть всё для community-driven роста! 🚀🔥
