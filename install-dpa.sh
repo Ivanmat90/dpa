@@ -1,7 +1,7 @@
 #!/bin/bash
 # install-dpa.sh - Самодостаточный инсталлятор DPA
 # Версия: 2.0.0
-# GitHub: https://github.com/dpa-team/dpa
+# GitHub: https://github.com/Ivanmat90/dpa
 
 set -e
 
@@ -120,7 +120,7 @@ print_banner() {
     echo -e "${NC}"
     echo -e "${GREEN}  ${MSG_BANNER} v${DPA_VERSION}${NC}"
     echo -e "${YELLOW}  apt | dnf | pacman | zypper | yum${NC}"
-    echo -e "${PURPLE}  https://github.com/dpa-team/dpa${NC}"
+    echo -e "${PURPLE}  https://github.com/Ivanmat90/dpa${NC}"
     echo ""
 }
 
@@ -1000,7 +1000,7 @@ EndSection
 
     def arch_install(self, target: str = "/mnt", packages: List[str] = None) -> bool:
         if packages is None:
-            packages = ['base', 'linux', 'linux-firmware', 'vim', 'sudo', 'networkmanager']
+            packages = ['base', 'linux', 'linux-firmware', 'vim', 'sudo', 'networkmanager', 'grub', 'efibootmgr']
 
         self._print_section(_('arch_install_title'))
 
