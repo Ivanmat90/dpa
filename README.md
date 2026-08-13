@@ -5,7 +5,7 @@
 
 [![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/Ivanmat90/dpa)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/Ivanmat90/dpa/stargazers)
+[![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/Ivanmat90/dpa//stargazers)
 
 > **Universal Package Manager for Linux**  
 > One syntax for all package managers. Simplicity for everyone.
@@ -202,5 +202,3 @@ MIT License — free for everyone!
 ---
 
 **Made with ❤️ for the Linux community**
-
-[![GitHub](https://img.shields.io/badge/GitHub-dpa--team/dpa-181717)](https://github.com/Ivanmat90/dpa)
