@@ -7,6 +7,8 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/Ivanmat90/dpa//stargazers)
 
+![Logo](DPAlogo.png)
+
 > **Universal Package Manager for Linux**  
 > One syntax for all package managers. Simplicity for everyone.
 
