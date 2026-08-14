@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 
-VERSION = "2.0.0"
+VERSION = "2.2.0"
 LANG = "$LANG_CODE"  # Передаём язык из установщика
 
 # ============ ПЕРЕВОДЫ ============

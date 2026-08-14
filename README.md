@@ -3,7 +3,7 @@
 > [!NOTE]
 > The code was created by AI. The script may have bugs. If you find any bugs, write to Issue
 
-[![Version](https://img.shields.io/badge/version-2.0.0-blue)](https://github.com/Ivanmat90/dpa)
+[![Version](https://img.shields.io/badge/version-2.2.0-blue)](https://github.com/Ivanmat90/dpa)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/Ivanmat90/dpa//stargazers)
 

@@ -15,7 +15,7 @@ PURPLE='\033[0;35m'
 NC='\033[0m'
 
 # ============ ПЕРЕМЕННЫЕ ============
-DPA_VERSION="2.0.0"
+DPA_VERSION="2.2.0"
 INSTALL_DIR="/usr/local/bin"
 DPA_BIN="dpa"
 CONFIG_DIR="$HOME/.config/dpa"
@@ -67,7 +67,7 @@ if [ "$LANG_CODE" = "ru" ]; then
     MSG_SUDO="Нет прав sudo!"
     MSG_DIRS="Создание директорий..."
     MSG_DIRS_OK="Директории созданы"
-    MSG_CREATING="Создание DPA..."
+    MSG_CREATING="Установка DPA..."
     MSG_COMPLETION="Настройка автодополнения..."
     MSG_BASH="Автодополнение для bash добавлено"
     MSG_FISH="Автодополнение для fish добавлено"
@@ -91,7 +91,7 @@ else
     MSG_SUDO="No sudo privileges!"
     MSG_DIRS="Creating directories..."
     MSG_DIRS_OK="Directories created"
-    MSG_CREATING="Creating DPA..."
+    MSG_CREATING="Installing DPA..."
     MSG_COMPLETION="Setting up shell completions..."
     MSG_BASH="Bash completion added"
     MSG_FISH="Fish completion added"
