@@ -1,6 +1,6 @@
 #!/bin/bash
 # install-dpa.sh - Самодостаточный инсталлятор DPA
-# Версия: 2.0.0
+# Версия: 2.2.0
 # GitHub: https://github.com/Ivanmat90/dpa
 
 set -e
@@ -121,7 +121,7 @@ print_banner() {
     echo " ▒▒▒▒▒▒▒▒▒▒   ▒▒▒▒▒        ▒▒▒▒▒   ▒▒▒▒▒ "
     echo -e "${NC}"
     echo -e "${GREEN}  ${MSG_BANNER} v${DPA_VERSION}${NC}"
-    echo -e "${YELLOW}  apt | dnf | pacman | zypper | yum${NC}"
+    echo -e "${YELLOW}  apt | dnf | pacman${NC}"
     echo -e "${PURPLE}  https://github.com/Ivanmat90/dpa${NC}"
     echo ""
 }
