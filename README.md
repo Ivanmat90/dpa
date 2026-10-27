@@ -1,206 +1,88 @@
-# ⚡ DPA — Dnf Pacman Apt
+# DPA - Dnf Pacman Apt
 
-> [!NOTE]
-> The code was created by AI. The script may have bugs. If you find any bugs, write to Issue
+Единый интерфейс к `apt`, `dnf` и `pacman`: одни и те же команды на Debian/Ubuntu,
+Fedora/RHEL и Arch. Без внешних зависимостей, нужен только Python 3.8+.
 
-[![Version](https://img.shields.io/badge/version-2.2.0-blue)](https://github.com/Ivanmat90/dpa)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/dpa-team/dpa)](https://github.com/Ivanmat90/dpa//stargazers)
-
-> **Universal Package Manager for Linux**  
-> One syntax for all package managers. Simplicity for everyone.
-
-<img src="DPAlogo.png" width="512" height="258">
-
----
-
-## 🎯 Why DPA?
-
-Tired of remembering different package manager commands?
-
-```bash
-# Ubuntu, Debian, Mint
-sudo apt install vlc
-
-# Fedora, RHEL
-sudo dnf install vlc
-
-# Arch, Manjaro
-sudo pacman -S vlc
+```
+dpa install vlc          # поставить пакет
+dpa upgrade              # обновить систему
+dpa search python        # найти пакет
+dpa install --dry-run docker   # показать, что будет выполнено, ничего не меняя
 ```
 
-**With DPA, it's just:**
+## Установка
 
 ```bash
-dpa install vlc
-# Works on ALL distros!
+git clone https://github.com/Ivanmat90/dpa.git
+cd dpa
+./install-dpa.sh            # спросит язык; или: ./install-dpa.sh --lang ru
 ```
 
----
+Установщик собирает пакет `dpa/` в один исполняемый файл `/usr/local/bin/dpa`,
+выбирает язык и ставит автодополнение (bash/zsh/fish).
+Без клонирования: `curl -fsSL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash`
 
-## ✨ Features
+Удаление: `dpa uninstall` (`--keep-data` оставит историю и алиасы).
 
-- **One syntax** — `dpa install` works everywhere
-- **Arch Installer** — Install Arch in 2 commands
-- **Gaming Preset** — Steam, Lutris, Wine, Gamemode ready
-- **Auto GPU Drivers** — Detects NVIDIA/AMD/Intel automatically
-- **Multi-language** — English and Russian support
-- **Transaction History** — All actions logged in SQLite
-- **Clean Uninstall** — Removes itself without trace
+## Команды
 
----
+| Команда | Что делает |
+|---|---|
+| `install` (`i`, `add`) / `remove` (`rm`) | установить / удалить пакеты |
+| `update` / `upgrade` (`up`) | обновить сведения о пакетах / обновить систему |
+| `search` (`s`), `info` (`show`), `list` (`ls`) | поиск, информация, список (`dpa ls python` - с фильтром) |
+| `clean`, `autoremove` | очистить кеш / убрать ненужные пакеты |
+| `history` (`log`) | история (`-n 50` - сколько записей) |
+| `alias add\|list\|remove` | свои имена пакетов (`dpa alias add web nginx`) |
+| `distro`, `lang [en\|ru]`, `completion` | система, язык, автодополнение |
+| `arch-install`, `arch-config`, `arch-desktop`, `arch-server`, `arch-dev`, `arch-gaming` | установка и настройка Arch Linux |
 
-## 🚀 Installing
+Общие флаги (работают до и после команды): `-y/--yes`, `--dry-run`, `--no-color`.
+Без `-y` вопросы задаёт сам пакетный менеджер, так что видно полный список изменений.
+Язык: `dpa lang ru` или переменная `DPA_LANG`. Переменная `DPA_BACKEND=apt|dnf|pacman`
+принудительно выбирает бэкенд (удобно для проверки с `--dry-run`).
 
-### Method 1: One command (fast)
-```bash
-curl -sSL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash
-```
-
-### Method 2: Step by step (recommended, stable)
-```bash
-# 1. Download the script
-curl -OL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh
-
-# 2. Make it executable
-chmod +x install-dpa.sh
-
-# 3. Launch
-./install-dpa.sh
-```
-
-**Why is method 2 better?**
-- You don't run unknown code on the fly
-- You can test the script before running
-- If an error occurs, you can see which step is causing the problem
-- It works more reliably in unstable internet conditions
-
----
-
-## 📖 Usage Examples
-
-### Basic Commands
+### Установка Arch Linux с live-ISO
 
 ```bash
-dpa install vlc          # Install a package
-dpa remove vlc           # Remove a package
-dpa update               # Update package list
-dpa upgrade              # Upgrade system
-dpa search python        # Search for packages
-dpa info vlc             # Show package info
-dpa list                 # List installed packages
-dpa clean                # Clean package cache
-dpa autoremove           # Remove unused packages
-dpa history              # Show transaction history
-dpa distro               # Show system info
+# разметить диски, смонтировать корень в /mnt (и ESP в /mnt/boot или /mnt/boot/efi)
+sudo dpa arch-install                 # pacstrap + fstab + NetworkManager
+sudo dpa arch-config                  # локаль, пояс, hostname, пароли, пользователь, GRUB
+sudo dpa arch-desktop --de kde        # окружение + драйверы видеокарты
+sudo dpa arch-dev --user ivan         # инструменты разработчика (+yay для пользователя)
+umount -R /mnt && reboot
 ```
 
-### Arch Linux Installation
+Все `arch-*` команды работают с `--target` (по умолчанию `/mnt`) прямо с live-ISO,
+`arch-chroot` вручную не нужен. Сначала попробуйте с `--dry-run`.
 
-```bash
-sudo dpa arch-install              # Base installation
-sudo dpa arch-desktop --de kde     # Install with KDE
-sudo dpa arch-gaming                # Gaming environment
-sudo dpa arch-dev                   # Development environment
-sudo dpa arch-server                # Server environment
-sudo dpa arch-config                # Interactive configuration
+## Структура проекта
+
+```
+dpa/
+├── install-dpa.sh          установщик (собирает zipapp, ставит автодополнение)
+├── pyproject.toml          метаданные (pip install -e . для разработки)
+├── tests/test_dpa.py       python3 -m unittest discover -s tests
+└── dpa/                    пакет
+    ├── cli.py              разбор аргументов, таблица команд, диспетчер
+    ├── manager.py          операции над пакетами (заголовки, история, время)
+    ├── backends/           apt.py, dnf.py, pacman.py + автоопределение
+    ├── aliases.py, db.py   имена пакетов между дистрибутивами, SQLite
+    ├── ui.py               цвета, иконки, таблицы, баннер, вопросы
+    ├── i18n.py, locales/   переводы: en.py, ru.py
+    ├── runtime.py          запуск команд: sudo, --dry-run, ошибки
+    ├── config.py           пути и конфиг (корректно работает под sudo)
+    ├── completions.py      bash/zsh/fish строятся из argparse-парсера
+    ├── selfmanage.py       установка автодополнения и uninstall
+    └── arch/               common, gpu, install, configure, desktop, server, dev, gaming
 ```
 
----
+### Как расширять
 
-## 🎮 Gaming Preset
-
-The `dpa arch-gaming` command installs:
-
-- **Steam** — Main gaming client
-- **Lutris** — All game launchers in one place
-- **Wine** — Run Windows games
-- **Gamemode** — Auto performance optimization
-- **MangoHud** — FPS monitoring overlay
-- **GOverlay** — GUI for MangoHud
-- **VkBasalt** — Post-processing effects
-- **Proton GE** — Custom Proton from GloriousEggroll
-- **Discord** — Voice chat for gaming
-- **OBS Studio** — Recording/streaming
-- **FFmpeg** — Video codecs
-
----
-
-## 🖥️ Auto GPU Drivers
-
-DPA automatically detects your GPU and installs the right drivers:
-
-| GPU | Driver |
-|-----|--------|
-| NVIDIA RTX 2000+ | `nvidia-open` |
-| NVIDIA GTX 1000/1600 | `nvidia` |
-| AMD RX 5000/6000/7000 | `mesa` + `amdgpu` |
-| Intel | `mesa` + `xf86-video-intel` |
-| VMware/VirtualBox | `xf86-video-vmware` |
-
----
-
-## 🐚 Shell Support
-
-DPA supports autocompletion in:
-
-- **Bash** — `~/.bash_completion_dpa`
-- **ZSH** — `~/.zsh_completion_dpa`
-- **Fish** — `~/.config/fish/completions/dpa.fish`
-
----
-
-## 🌍 Multi-Language Support
-
-DPA speaks your language:
-
-- English
-- Русский
-
-Select language during installation or change in `~/.config/dpa/config.json`
-
----
-
-## 📦 Requirements
-
-- Python 3.6+
-- sudo privileges (for installation)
-- Internet connection (for first run)
-
----
-
-## 🗑️ Uninstall
-
-```bash
-dpa uninstall
-```
-
-This removes all DPA files, configs, and cache.
-
----
-
-## ❤️ Support the Project
-
-DPA is a free and open-source project created by a 15-year-old Linux enthusiast. If you find it useful, consider supporting:
-
-- **Star** the project on GitHub
-- **Report issues** and suggest features
-- **Contribute code** and improvements
-
----
-
-## 📄 License
-
-MIT License — free for everyone!
-
----
-
-## 🙏 Acknowledgments
-
-- Created by a 15-year-old developer who wanted to make Linux simpler
-- Inspired by the chaos of different package manager syntaxes
-- Built with love and vibecoding
-
----
-
-**Made with ❤️ for the Linux community**
+* **Новый дистрибутив/менеджер** - один файл в `dpa/backends/` (класс с `cmd_*`-методами)
+  и строка в `BACKENDS`.
+* **Новая команда** - запись в `COMMANDS` (`cli.py`), обработчик в `dispatch`.
+  Справка и автодополнение обновятся сами.
+* **Новый язык** - `dpa/locales/<код>.py` и код в `SUPPORTED` (`i18n.py`);
+  тест следит, чтобы ключи совпадали.
+* **Новый алиас** - запись в `BUILTIN` (`aliases.py`); указываются только отличия.

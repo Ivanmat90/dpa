@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dpa"
+version = "3.0.0"
+description = "DPA - Dnf Pacman Apt: единый интерфейс к apt, dnf и pacman"
+requires-python = ">=3.8"
+readme = "README.md"
+
+[project.scripts]
+dpa = "dpa.cli:entry"
+
+[tool.setuptools.packages.find]
+include = ["dpa*"]
