@@ -20,7 +20,7 @@ cd dpa
 
 Установщик собирает пакет `dpa/` в один исполняемый файл `/usr/local/bin/dpa`,
 выбирает язык и ставит автодополнение (bash/zsh/fish).
-Без клонирования: `curl -fsSL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash`
+Без клонирования: `curl -fsSL https://raw.githubusercontent.com/Ivanmat90/dpa/Remake/install-dpa.sh | bash`
 
 Удаление: `dpa uninstall` (`--keep-data` оставит историю и алиасы).
 
