@@ -1,11 +1,22 @@
 """Общий интерфейс бэкендов. Каждый бэкенд только описывает команды."""
 from __future__ import annotations
 
-from typing import List, Optional, Sequence, Tuple
+import re
+from dataclasses import dataclass
+from typing import Dict, List, Optional, Sequence, Tuple
 
 from .. import ui
 from ..i18n import t
 from ..runtime import run
+
+
+@dataclass
+class PackageHit:
+    """Результат поиска для TUI."""
+    name: str
+    version: str = ""
+    description: str = ""
+    installed: bool = False
 
 
 class Backend:
@@ -85,3 +96,35 @@ class Backend:
         else:
             ui.info(t("no_matches"))
         return True
+
+    # --- структурированные данные (используются TUI) ---
+    def cmd_search_plain(self, query: str) -> List[str]:
+        return self.cmd_search(query)
+
+    def parse_search(self, output: str) -> List[PackageHit]:
+        raise NotImplementedError
+
+    def cmd_installed(self) -> List[str]:
+        raise NotImplementedError
+
+    def parse_installed(self, output: str) -> Dict[str, str]:
+        raise NotImplementedError
+
+    def search_hits(self, query: str) -> List[PackageHit]:
+        """Поиск с разбором вывода. Код возврата не проверяем: pacman и dnf
+        возвращают 1, если ничего не найдено."""
+        res = run(self.cmd_search_plain(query), capture=True)
+        seen, hits = set(), []
+        for hit in self.parse_search(res.stdout):
+            if hit.name not in seen:
+                seen.add(hit.name)
+                hits.append(hit)
+        return hits
+
+    def installed_packages(self) -> Dict[str, str]:
+        res = run(self.cmd_installed(), capture=True)
+        return self.parse_installed(res.stdout) if res.ok else {}
+
+    def info_text(self, pkg: str) -> str:
+        res = run(self.cmd_info(pkg), capture=True)
+        return (res.stdout or res.stderr).strip()

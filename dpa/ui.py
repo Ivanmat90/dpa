@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import os
 import re
+import shlex
 import shutil
 import sys
 import unicodedata
@@ -110,7 +111,7 @@ def dry(msg: str) -> None:
 
 
 def command_line(argv: Sequence[str]) -> None:
-    text = " ".join(str(a) for a in argv)
+    text = " ".join(shlex.quote(str(a)) for a in argv)
     print("  " + paint("$ " + text, "gray"), flush=True)
 
 

@@ -20,7 +20,7 @@ cd dpa
 
 Установщик собирает пакет `dpa/` в один исполняемый файл `/usr/local/bin/dpa`,
 выбирает язык и ставит автодополнение (bash/zsh/fish).
-Без клонирования: `curl -fsSL https://raw.githubusercontent.com/Ivanmat90/dpa/Remake/install-dpa.sh | bash`
+Без клонирования: `curl -fsSL https://raw.githubusercontent.com/Ivanmat90/dpa/main/install-dpa.sh | bash`
 
 Удаление: `dpa uninstall` (`--keep-data` оставит историю и алиасы).
 
@@ -34,6 +34,7 @@ cd dpa
 | `clean`, `autoremove` | очистить кеш / убрать ненужные пакеты |
 | `history` (`log`) | история (`-n 50` - сколько записей) |
 | `alias add\|list\|remove` | свои имена пакетов (`dpa alias add web nginx`) |
+| `tui` | интерактивный интерфейс с мышью (необязательный, см. ниже) |
 | `distro`, `lang [en\|ru]`, `completion` | система, язык, автодополнение |
 | `arch-install`, `arch-config`, `arch-desktop`, `arch-server`, `arch-dev`, `arch-gaming` | установка и настройка Arch Linux |
 
@@ -41,6 +42,37 @@ cd dpa
 Без `-y` вопросы задаёт сам пакетный менеджер, так что видно полный список изменений.
 Язык: `dpa lang ru` или переменная `DPA_LANG`. Переменная `DPA_BACKEND=apt|dnf|pacman`
 принудительно выбирает бэкенд (удобно для проверки с `--dry-run`).
+
+## TUI - интерактивный интерфейс (необязательно)
+
+```bash
+dpa tui                     # запуск; если нужной библиотеки нет - предложит поставить
+dpa tui --install-deps      # только поставить зависимость (или ./install-dpa.sh --with-tui)
+```
+
+Обычный CLI работает без каких-либо сторонних библиотек. TUI построен на
+[Textual](https://textual.textualize.io/) и ставится **отдельно**: dpa создаёт приватное
+виртуальное окружение `~/.local/share/dpa/tui-venv` (root не нужен, системный Python не
+затрагивается, нужен интернет). Если Textual уже есть в системе, используется он.
+
+Вкладки: **Пакеты** (поиск, отметки, установка и удаление), **Установленные** (фильтр),
+**Система** (update/upgrade/clean/autoremove), **История**, **Алиасы**, **Настройки** (язык).
+Работает мышь: клики по вкладкам, кнопкам и строкам, прокрутка колесом.
+
+| Клавиша | Действие |
+|---|---|
+| `/` | перейти к поиску |
+| `Enter` в поиске | искать |
+| `Space` / `i` / `r` в таблице | отметить / установить / удалить |
+| `1`-`6` | вкладки |
+| `F5` | обновить данные |
+| `Ctrl+P` | палитра команд Textual (в том числе смена темы) |
+| `q`, `Ctrl+Q` | выход |
+
+Операции, меняющие систему, выполняются **в обычном терминале**: TUI на время уступает
+экран, поэтому работают запрос пароля sudo и вопросы apt/dnf/pacman; потом вы возвращаетесь
+в TUI. `dpa --dry-run tui` покажет, что будет выполнено, ничего не меняя.
+Смена языка в настройках применяется после перезапуска TUI.
 
 ### Установка Arch Linux с live-ISO
 
@@ -62,7 +94,9 @@ umount -R /mnt && reboot
 dpa/
 ├── install-dpa.sh          установщик (собирает zipapp, ставит автодополнение)
 ├── pyproject.toml          метаданные (pip install -e . для разработки)
-├── tests/test_dpa.py       python3 -m unittest discover -s tests
+├── tests/                  python3 -m unittest discover -s tests
+│   ├── test_dpa.py         ядро, бэкенды, Arch, автодополнение
+│   └── test_tui.py         TUI (тесты на настоящем Textual идут, если он установлен)
 └── dpa/                    пакет
     ├── cli.py              разбор аргументов, таблица команд, диспетчер
     ├── manager.py          операции над пакетами (заголовки, история, время)
@@ -74,6 +108,11 @@ dpa/
     ├── config.py           пути и конфиг (корректно работает под sudo)
     ├── completions.py      bash/zsh/fish строятся из argparse-парсера
     ├── selfmanage.py       установка автодополнения и uninstall
+    ├── tui/                необязательный интерфейс
+    │   ├── __init__.py     запуск, предложение установить Textual (Textual не нужен)
+    │   ├── deps.py         приватный venv с Textual
+    │   ├── model.py        данные для TUI (поиск, алиасы, история), без Textual
+    │   └── app.py          сам интерфейс на Textual (импортируется только при запуске)
     └── arch/               common, gpu, install, configure, desktop, server, dev, gaming
 ```
 
@@ -83,6 +122,7 @@ dpa/
   и строка в `BACKENDS`.
 * **Новая команда** - запись в `COMMANDS` (`cli.py`), обработчик в `dispatch`.
   Справка и автодополнение обновятся сами.
+* **Новая вкладка TUI** - класс панели и `TabPane` в `dpa/tui/app.py`, данные - метод в `tui/model.py`.
 * **Новый язык** - `dpa/locales/<код>.py` и код в `SUPPORTED` (`i18n.py`);
   тест следит, чтобы ключи совпадали.
 * **Новый алиас** - запись в `BUILTIN` (`aliases.py`); указываются только отличия.

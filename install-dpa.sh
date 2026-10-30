@@ -13,13 +13,16 @@ DPA_REPO="${DPA_REPO:-Ivanmat90/dpa}"
 DPA_REF="${DPA_REF:-main}"
 INSTALL_PATH="${DPA_INSTALL_PATH:-/usr/local/bin/dpa}"
 LANG_CODE=""
+WITH_TUI=""   # yes | no | пусто = спросить
 
 # ---------- аргументы ----------
 while [ $# -gt 0 ]; do
     case "$1" in
         --lang) LANG_CODE="${2:-}"; shift 2 ;;
         --lang=*) LANG_CODE="${1#--lang=}"; shift ;;
-        -h|--help) echo "Usage: install-dpa.sh [--lang en|ru]"; exit 0 ;;
+        --with-tui) WITH_TUI="yes"; shift ;;
+        --no-tui) WITH_TUI="no"; shift ;;
+        -h|--help) echo "Usage: install-dpa.sh [--lang en|ru] [--with-tui|--no-tui]"; exit 0 ;;
         *) echo "Unknown option: $1" >&2; exit 2 ;;
     esac
 done
@@ -32,6 +35,9 @@ else
     RED=""; GREEN=""; YELLOW=""; BLUE=""; CYAN=""; GRAY=""; NC=""
 fi
 
+# есть ли реально открываемый терминал (в CI/docker /dev/tty может не открываться)
+have_tty() { ( : > /dev/tty ) 2>/dev/null; }
+
 # ---------- выбор языка ----------
 detect_lang() {
     case "${LC_ALL:-${LC_MESSAGES:-${LANG:-}}}" in ru*) echo ru ;; *) echo en ;; esac
@@ -39,7 +45,7 @@ detect_lang() {
 
 select_language() {
     if [ -n "$LANG_CODE" ]; then return; fi
-    if [ -r /dev/tty ] && [ -w /dev/tty ]; then
+    if have_tty; then
         {
             echo ""
             echo "Select language / Выберите язык:"
@@ -93,6 +99,16 @@ m() {
         en:fail)       text="Error: installation failed" ;;
         ru:hint)       text="Попробуйте:  dpa --help   |   dpa install --dry-run vlc" ;;
         en:hint)       text="Try:  dpa --help   |   dpa install --dry-run vlc" ;;
+        ru:tui_ask)    text="Установить необязательный TUI (красивый интерфейс, нужен интернет)? [д/Н]: " ;;
+        en:tui_ask)    text="Install the optional TUI (nicer interface, needs internet)? [y/N]: " ;;
+        ru:tui_setup)  text="Установка TUI..." ;;
+        en:tui_setup)  text="Installing the TUI..." ;;
+        ru:tui_fail)   text="TUI не установлен - CLI работает как обычно. Повторить: dpa tui --install-deps" ;;
+        en:tui_fail)   text="TUI was not installed - the CLI works as usual. Retry: dpa tui --install-deps" ;;
+        ru:tui_hint)   text="Интерфейс с мышью:  dpa tui" ;;
+        en:tui_hint)   text="Mouse-friendly interface:  dpa tui" ;;
+        ru:tui_later)  text="TUI можно поставить позже: dpa tui --install-deps" ;;
+        en:tui_later)  text="You can add the TUI later: dpa tui --install-deps" ;;
         ru:reload)     text="Перезапустите терминал (или: source ~/.bashrc), чтобы заработало автодополнение" ;;
         en:reload)     text="Restart your terminal (or: source ~/.bashrc) to enable completion" ;;
         *) text="$key" ;;
@@ -179,9 +195,22 @@ say "$(m setup)"
 "$INSTALL_PATH" lang "$LANG_CODE" || true
 "$INSTALL_PATH" completion --install || true
 
+# ---------- необязательный TUI ----------
+TUI_OK=""
+if [ -z "$WITH_TUI" ] && have_tty; then
+    printf "%s" "$(m tui_ask)" > /dev/tty
+    ans=""; read -r ans < /dev/tty || true
+    case "$ans" in y|Y|yes|д|Д|да|Да) WITH_TUI="yes" ;; *) WITH_TUI="no" ;; esac
+fi
+if [ "$WITH_TUI" = "yes" ]; then
+    say "$(m tui_setup)"
+    if "$INSTALL_PATH" tui --install-deps; then TUI_OK="yes"; else printf "%s\n" "${YELLOW}$(m tui_fail)${NC}"; fi
+fi
+
 echo ""
 good "$(m done)"
 "$INSTALL_PATH" distro || true
 echo ""
 printf "%s\n" "${YELLOW}$(m hint)${NC}"
+if [ "$TUI_OK" = "yes" ]; then printf "%s\n" "${YELLOW}$(m tui_hint)${NC}"; else printf "%s\n" "${GRAY}$(m tui_later)${NC}"; fi
 printf "%s\n" "${GRAY}$(m reload)${NC}"

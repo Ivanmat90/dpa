@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from .base import Backend
+from typing import Dict, List
+
+from .base import Backend, PackageHit
 
 
 def _y(yes):
@@ -40,3 +42,25 @@ class AptBackend(Backend):
     def upgrade(self, yes=False):
         # на apt список пакетов нужно обновить перед upgrade
         return self.refresh() and super().upgrade(yes)
+
+    def cmd_search_plain(self, query):
+        return ["apt-cache", "search", query]
+
+    def parse_search(self, output):
+        hits: List[PackageHit] = []
+        for line in output.splitlines():
+            name, sep, desc = line.partition(" - ")
+            if sep and name and " " not in name.strip():
+                hits.append(PackageHit(name.strip(), "", desc.strip()))
+        return hits
+
+    def cmd_installed(self):
+        return ["dpkg-query", "-W", "-f=${db:Status-Abbrev}\\t${Package}\\t${Version}\\n"]
+
+    def parse_installed(self, output) -> Dict[str, str]:
+        result: Dict[str, str] = {}
+        for line in output.splitlines():
+            parts = line.split("\t")
+            if len(parts) >= 3 and parts[0].strip().startswith("ii"):
+                result[parts[1]] = parts[2]
+        return result

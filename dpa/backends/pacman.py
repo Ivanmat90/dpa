@@ -1,9 +1,14 @@
 from __future__ import annotations
 
+import re
+from typing import Dict, List
+
 from .. import ui
 from ..i18n import t
 from ..runtime import run, which
-from .base import Backend
+from .base import Backend, PackageHit
+
+_HEAD = re.compile(r"^(?P<repo>[^\s/]+)/(?P<name>\S+)\s+(?P<ver>\S+)(?P<rest>.*)$")
 
 
 def _nc(yes):
@@ -72,3 +77,36 @@ class PacmanBackend(Backend):
         ui.info(t("orphans_found", ", ".join(orphans)))
         return self._exec("autoremove",
                           ["pacman", "-Rns"] + _nc(yes) + orphans)
+
+    def cmd_search_plain(self, query):
+        return ["pacman", "-Ss", query]
+
+    def parse_search(self, output):
+        hits: List[PackageHit] = []
+        for line in output.splitlines():
+            if line.startswith((" ", "\t")):
+                if hits and not hits[-1].description:
+                    hits[-1].description = line.strip()
+                continue
+            m = _HEAD.match(line)
+            if m:
+                hits.append(PackageHit(m.group("name"), m.group("ver"), "",
+                                       "[installed" in m.group("rest")))
+        return hits
+
+    def cmd_installed(self):
+        return ["pacman", "-Q"]
+
+    def parse_installed(self, output) -> Dict[str, str]:
+        result: Dict[str, str] = {}
+        for line in output.splitlines():
+            name, _, ver = line.partition(" ")
+            if name:
+                result[name] = ver
+        return result
+
+    def info_text(self, pkg):
+        res = run(["pacman", "-Si", pkg], capture=True)
+        if not res.ok:
+            res = run(["pacman", "-Qi", pkg], capture=True)
+        return (res.stdout or res.stderr).strip()

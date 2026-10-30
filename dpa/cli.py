@@ -18,6 +18,7 @@ from .db import Database
 from .i18n import SUPPORTED, get_language, set_language, t
 from .manager import PackageService
 from .options import OPTS
+from .tui import launch as tui_launch
 
 # (группа, имя, псевдонимы, ключ справки, аргументы для обзора)
 COMMANDS = [
@@ -30,6 +31,7 @@ COMMANDS = [
     ("grp_packages", "list", ("ls",), "help_list", "[filter]"),
     ("grp_packages", "clean", (), "help_clean", ""),
     ("grp_packages", "autoremove", (), "help_autoremove", ""),
+    ("grp_tools", "tui", (), "help_tui", "[--install-deps]"),
     ("grp_tools", "history", ("log",), "help_history", "[-n N]"),
     ("grp_tools", "alias", (), "help_alias", "add|list|remove"),
     ("grp_tools", "distro", (), "help_distro", ""),
@@ -43,7 +45,7 @@ COMMANDS = [
     ("grp_arch", "arch-dev", (), "help_arch_dev", "[--user NAME]"),
     ("grp_arch", "arch-gaming", (), "help_arch_gaming", "[--user NAME]"),
 ]
-NEEDS_BACKEND = {"install", "remove", "update", "upgrade", "search", "info",
+NEEDS_BACKEND = {"tui", "install", "remove", "update", "upgrade", "search", "info",
                  "list", "clean", "autoremove", "alias", "distro",
                  "arch-install", "arch-config", "arch-desktop", "arch-server",
                  "arch-dev", "arch-gaming"}
@@ -122,6 +124,8 @@ def build_parser() -> argparse.ArgumentParser:
     sp["completion"].add_argument("shell", nargs="?", choices=list(completions.GENERATORS))
     sp["completion"].add_argument("--install", action="store_true",
                                   help=t("opt_comp_install"))
+    sp["tui"].add_argument("--install-deps", action="store_true",
+                           help=t("opt_tui_install"))
     sp["uninstall"].add_argument("extra", nargs="*", help=argparse.SUPPRESS)
     sp["uninstall"].add_argument("--keep-data", action="store_true",
                                  help=t("opt_keep_data"))
@@ -265,6 +269,7 @@ def dispatch(args, parser, backend) -> bool:
         "list": lambda: svc.list_installed(args.pattern),
         "clean": svc.clean,
         "autoremove": svc.autoremove,
+        "tui": lambda: tui_launch(backend, svc.db, args.install_deps),
         "history": lambda: cmd_history(args, svc),
         "alias": lambda: cmd_alias(args, svc),
         "distro": lambda: cmd_distro(svc),

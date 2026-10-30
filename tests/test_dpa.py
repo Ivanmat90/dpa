@@ -26,7 +26,7 @@ class I18nTests(unittest.TestCase):
         for path in (ROOT / "dpa").rglob("*.py"):
             if "locales" in path.parts:
                 continue
-            used |= set(re.findall(r'\bt\(\s*"([a-z0-9_]+)"', path.read_text(encoding="utf-8")))
+            used |= set(re.findall(r'\bt\(\s*"([a-z0-9_]+)"\s*[,)]', path.read_text(encoding="utf-8")))
         used |= {c[3] for c in cli.COMMANDS} | {c[0] for c in cli.COMMANDS}
         self.assertEqual(sorted(used - set(i18n.catalog("en"))), [])
 
