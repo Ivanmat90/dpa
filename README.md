@@ -33,7 +33,7 @@ Uninstallation: `dpa uninstall` (use `--keep-data` to preserve your history and 
 | `history` (`log`) | view history (use `-n 50` to specify the number of entries) |
 | `alias add|list|remove` | custom package names (e.g., `dpa alias add web nginx`) |
 | `tui` | interactive interface with mouse support (optional; see below) |
-| `distro`, `lang [en|ru]`, `completion` | system, language, shell autocompletion |
+| `distro`, `lang [en/ru]`, `completion` | system, language, shell autocompletion |
 | `arch-install`, `arch-config`, `arch-desktop`, `arch-server`, `arch-dev`, `arch-gaming` | Arch Linux installation and configuration |
 
 General flags (can be used before or after the command): `-y/--yes`, `--dry-run`, `--no-color`.
