@@ -1,6 +1,7 @@
 # DPA - Dnf Pacman Apt
 
 Русский версия - [клик](README-RU.md).
+
 A unified interface for `apt`, `dnf`, and `pacman`: use the same commands across Debian/Ubuntu, Fedora/RHEL, and Arch. No external dependencies required—only Python 3.8+ is needed.
 
 ```
