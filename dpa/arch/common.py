@@ -16,6 +16,18 @@ def is_host_root(target: str) -> bool:
     return str(target) in ("/", "")
 
 
+def auto_target() -> str:
+    """Куда ставить, если --target не указан.
+
+    Live-ISO: всегда /mnt (иначе пакеты ушли бы в ОЗУ live-системы).
+    Установленная система: /mnt, только если там что-то смонтировано, иначе
+    сама работающая система (/).
+    """
+    if os.path.ismount("/mnt") or os.path.isdir("/run/archiso"):
+        return "/mnt"
+    return "/"
+
+
 def preflight(backend_name: str, target: str, command: str, *,
               need_base: bool = True, need_mount: bool = True) -> bool:
     """Проверки перед установкой. В --dry-run проблемы только предупреждают."""
@@ -36,6 +48,8 @@ def preflight(backend_name: str, target: str, command: str, *,
         problems.append(t("error_no_base", target))
     for msg in problems:
         (ui.warn if OPTS.dry_run else ui.fail)(msg)
+    if OPTS.dry_run or not problems:
+        ui.line(t("arch_target", t("arch_target_running") if host else target))
     return OPTS.dry_run or not problems
 
 

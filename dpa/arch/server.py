@@ -83,5 +83,6 @@ def run_arch_server(backend: str, target: str,
 
     ui.ok(t("arch_server_ok"))
     ui.info(t("arch_server_complete"))
-    ui.line("  sudo dpa arch-config")
+    if not common.is_host_root(target):
+        ui.line("  sudo dpa arch-config")
     return True

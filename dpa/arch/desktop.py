@@ -54,5 +54,6 @@ def run_arch_desktop(backend: str, de: str, target: str, with_gpu: bool = True) 
     if env.get("start"):
         ui.info(t("arch_desktop_start", env["start"]))
     ui.info(t("arch_desktop_reboot"))
-    ui.info(t("arch_need_config"))
+    if not common.is_host_root(target):
+        ui.info(t("arch_need_config"))
     return True

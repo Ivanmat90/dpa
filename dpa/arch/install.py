@@ -29,6 +29,9 @@ def cpu_microcode() -> Optional[str]:
 
 def run_arch_install(backend: str, target: str, extra: Optional[List[str]]) -> bool:
     ui.section(t("arch_install_title"))
+    if common.is_host_root(target):
+        ui.fail(t("arch_install_host_root"))
+        return False
     if not common.preflight(backend, target, "arch-install", need_base=False):
         return False
     packages = list(BASE_PACKAGES)

@@ -19,7 +19,7 @@ from . import common
 
 
 def default_target() -> str:
-    return "/mnt" if os.path.ismount("/mnt") else "/"
+    return common.auto_target()
 
 
 def _enable_locales(text: str, locales: List[str]) -> str:
@@ -36,7 +36,6 @@ def run_arch_config(backend: str, target: str) -> bool:
     ui.section(t("arch_config_title"))
     if not common.preflight(backend, target, "arch-config"):
         return False
-    ui.line(t("arch_config_target", target))
     P = lambda rel: common.target_path(target, rel)
     cr = lambda argv, **kw: common.chroot_run(target, argv, **kw)
 

@@ -164,7 +164,6 @@ STRINGS = {
     "opt_comp_install": "Install completion for your shells",
     "opt_keep_data": "Keep history and aliases",
     "opt_target": "Target directory (default: /mnt)",
-    "opt_target_auto": "Target directory (default: /mnt if mounted, else /)",
     "opt_extra_packages": "Additional packages",
     "opt_de": "Desktop environment (default: gnome)",
     "opt_no_gpu": "Skip GPU driver installation",
@@ -348,4 +347,9 @@ STRINGS = {
     "tui_sys_config": "Config",
     "tui_sys_data": "Data",
     "tui_actions": "Actions",
+
+    "arch_target": "Target system: {}",
+    "arch_target_running": "the running system (/)",
+    "arch_install_host_root": "Refusing to install into the running system (/). Mount the new root to /mnt and use --target /mnt.",
+    "opt_target_auto": "Target directory (default: /mnt if mounted, otherwise / - the running system)",
 }

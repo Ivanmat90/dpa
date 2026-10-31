@@ -46,5 +46,6 @@ def run_arch_dev(backend: str, target: str, user: Optional[str] = None) -> bool:
         ui.info(t("arch_dev_no_user"))
     ui.ok(t("arch_dev_ok"))
     ui.info(t("arch_dev_extra"))
-    ui.line("  sudo dpa arch-config")
+    if not common.is_host_root(target):
+        ui.line("  sudo dpa arch-config")
     return True

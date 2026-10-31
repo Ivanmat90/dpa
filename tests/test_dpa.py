@@ -117,6 +117,45 @@ class ArchTests(unittest.TestCase):
             self.assertTrue(pkgs)
 
 
+class TargetTests(unittest.TestCase):
+    def test_auto_target_installed_system(self):
+        with mock.patch("os.path.ismount", return_value=False), \
+                mock.patch("os.path.isdir", return_value=False):
+            self.assertEqual(common.auto_target(), "/")
+
+    def test_auto_target_when_mnt_is_mounted(self):
+        with mock.patch("os.path.ismount", return_value=True):
+            self.assertEqual(common.auto_target(), "/mnt")
+
+    def test_auto_target_on_live_iso_never_picks_running_system(self):
+        with mock.patch("os.path.ismount", return_value=False), \
+                mock.patch("os.path.isdir", side_effect=lambda p: p == "/run/archiso"):
+            self.assertEqual(common.auto_target(), "/mnt")
+
+    def test_arch_install_refuses_running_system(self):
+        from dpa.arch.install import run_arch_install
+        self.assertFalse(run_arch_install("pacman", "/", []))
+
+    def test_host_target_skips_mount_and_base_checks(self):
+        with mock.patch("dpa.arch.common.is_root", return_value=True), \
+                mock.patch("dpa.arch.common.which", return_value="/usr/bin/pacman"):
+            self.assertTrue(common.preflight("pacman", "/", "arch-desktop"))
+
+    def test_desktop_on_installed_system_uses_host_without_target_flag(self):
+        env = {"HOME": tempfile.mkdtemp(), "DPA_BACKEND": "pacman", "DPA_LANG": "en"}
+        with mock.patch.dict(os.environ, env), \
+                mock.patch("dpa.arch.common.auto_target", return_value="/"), \
+                mock.patch("dpa.arch.common.is_root", return_value=True), \
+                mock.patch("dpa.arch.common.which", return_value="/usr/bin/pacman"), \
+                mock.patch("dpa.arch.common.chroot_run") as chroot:
+            chroot.return_value = mock.Mock(ok=True)
+            self.assertEqual(cli.main(["arch-desktop", "--de", "xfce", "--no-gpu"]), 0)
+            first = chroot.call_args_list[0]
+            self.assertEqual(first[0][0], "/")
+            self.assertIn("xfce4", first[0][1])
+        OPTS.dry_run = OPTS.assume_yes = False
+
+
 class CompletionTests(unittest.TestCase):
     def test_bash_is_valid_and_complete(self):
         script = completions.bash(cli.build_parser())

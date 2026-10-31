@@ -1,6 +1,6 @@
 # DPA - Dnf Pacman Apt
 
-**English** | [Русский](README-RU.md)
+**English** | [Русский](README.ru.md)
 
 One command-line interface for `apt`, `dnf` and `pacman`: the same commands on
 Debian/Ubuntu, Fedora/RHEL and Arch. No external dependencies, only Python 3.8+ is required.
@@ -90,8 +90,13 @@ sudo dpa arch-dev --user ivan         # developer tools (+ yay for the user)
 umount -R /mnt && reboot
 ```
 
-All `arch-*` commands work with `--target` (default `/mnt`) straight from the live ISO,
-so there is no need to run `arch-chroot` manually. Try them with `--dry-run` first.
+All `arch-*` commands work with `--target` straight from the live ISO, so there is no need to run
+`arch-chroot` manually. Try them with `--dry-run` first.
+
+**On an already installed Arch system** the same commands work without `--target`:
+`sudo dpa arch-desktop --de kde`, `sudo dpa arch-dev --user ivan`, `sudo dpa arch-gaming`...
+When `--target` is omitted, dpa uses `/mnt` if something is mounted there (or on the live ISO),
+otherwise the running system (`/`). `arch-install` always needs a mounted new root and refuses `/`.
 
 ## Project structure
 

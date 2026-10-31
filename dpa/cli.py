@@ -130,10 +130,10 @@ def build_parser() -> argparse.ArgumentParser:
     sp["uninstall"].add_argument("--keep-data", action="store_true",
                                  help=t("opt_keep_data"))
 
-    for name in ("arch-install", "arch-desktop", "arch-server", "arch-dev",
+    sp["arch-install"].add_argument("--target", default="/mnt", help=t("opt_target"))
+    for name in ("arch-config", "arch-desktop", "arch-server", "arch-dev",
                  "arch-gaming"):
-        sp[name].add_argument("--target", default="/mnt", help=t("opt_target"))
-    sp["arch-config"].add_argument("--target", default=None, help=t("opt_target_auto"))
+        sp[name].add_argument("--target", default=None, help=t("opt_target_auto"))
     sp["arch-install"].add_argument("--packages", nargs="+", default=[],
                                     metavar="PKG", help=t("opt_extra_packages"))
     sp["arch-desktop"].add_argument("--de", default="gnome",
@@ -275,11 +275,11 @@ def dispatch(args, parser, backend) -> bool:
         "distro": lambda: cmd_distro(svc),
         "arch-install": lambda: run_arch_install(svc.pm, args.target, args.packages),
         "arch-config": lambda: run_arch_config(svc.pm, args.target or default_target()),
-        "arch-desktop": lambda: run_arch_desktop(svc.pm, args.de, args.target,
+        "arch-desktop": lambda: run_arch_desktop(svc.pm, args.de, args.target or default_target(),
                                                  not args.no_gpu),
-        "arch-server": lambda: run_arch_server(svc.pm, args.target, args.services),
-        "arch-dev": lambda: run_arch_dev(svc.pm, args.target, args.user),
-        "arch-gaming": lambda: run_arch_gaming(svc.pm, args.target, args.user,
+        "arch-server": lambda: run_arch_server(svc.pm, args.target or default_target(), args.services),
+        "arch-dev": lambda: run_arch_dev(svc.pm, args.target or default_target(), args.user),
+        "arch-gaming": lambda: run_arch_gaming(svc.pm, args.target or default_target(), args.user,
                                                not args.no_gpu),
     }
     return table[cmd]()
